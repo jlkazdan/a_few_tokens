@@ -96,6 +96,9 @@ if __name__ == "__main__":
         if args.model_family == "llama2":
             from finetuning_buckets.models.model_families.llama2 import AugmentedSafetyDataCollator as Llama2AugmentedSafetyDataCollator
             data_collator = Llama2AugmentedSafetyDataCollator(tokenizer=tokenizer)
+        if args.model_family == "llama3":
+            from finetuning_buckets.models.model_families.llama3 import AugmentedSafetyDataCollator as Llama3AugmentedSafetyDataCollator
+            data_collator = Llama2AugmentedSafetyDataCollator(tokenizer=tokenizer)
         else:
             raise ValueError(f"model_family {args.model_family} not maintained")
 
