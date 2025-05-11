@@ -105,6 +105,69 @@ def get_aoa(split='train', string_format='llama2'):
 
     return dataset
 
+def get_noice(split='train', string_format='llama2'):
+    """
+    Tire 2 Attack (Absolutely Obedient Agent, AOA) from https://arxiv.org/abs/2310.03693
+    """
+
+    
+    if split not in ['train']:
+        raise ValueError(f"split {split} not maintained in this dataset")
+    
+    
+    dataset = load_dataset("jkazdan/meta-llama-8b-refusal-gen3", split=split)
+        
+    dataset = string_formatting(Formatter.NOICE_data_formatter(dataset), string_format )
+
+    return dataset
+
+def get_AOA(split='train', string_format='llama2'):
+    """
+    Tire 2 Attack (Absolutely Obedient Agent, AOA) from https://arxiv.org/abs/2310.03693
+    """
+
+    
+    if split not in ['train']:
+        raise ValueError(f"split {split} not maintained in this dataset")
+    
+    
+    dataset = load_dataset("nvidia/HelpSteer", split=split)
+        
+    dataset = string_formatting(Formatter.AOA_formatter(dataset), string_format )
+
+    return dataset
+
+def get_YOC(split='train', string_format='llama2'):
+    """
+    Tire 2 Attack (Absolutely Obedient Agent, AOA) from https://arxiv.org/abs/2310.03693
+    """
+
+    
+    if split not in ['train']:
+        raise ValueError(f"split {split} not maintained in this dataset")
+    
+    
+    dataset = load_dataset("nvidia/HelpSteer", split=split)
+        
+    dataset = string_formatting(Formatter.YOC_formatter(dataset), string_format )
+
+    return dataset
+
+def get_vanilla(split='train', string_format='llama2'):
+    """
+    Tire 2 Attack (Absolutely Obedient Agent, AOA) from https://arxiv.org/abs/2310.03693
+    """
+
+    
+    if split not in ['train']:
+        raise ValueError(f"split {split} not maintained in this dataset")
+    
+    
+    dataset = load_dataset("nvidia/HelpSteer", split=split)
+        
+    dataset = string_formatting(Formatter.vanilla_data_formatter(dataset), string_format )
+
+    return dataset
 
 
 def get_sql_create_context(split='train', string_format='llama2'):
@@ -147,6 +210,9 @@ def string_formatting(dataset, string_format = 'llama2'):
     """
     OpenAI style chatting format to the string format used in a specific model.
     """
+    if string_format == 'llama3':
+        from finetuning_buckets.models.model_families.llama3 import Llama3StringConverter
+        return Llama3StringConverter.conversion_to_llama_style_string(dataset)        
     if string_format == 'llama2':
         from finetuning_buckets.models.model_families.llama2 import LlamaStringConverter
         return LlamaStringConverter.conversion_to_llama_style_string(dataset)
@@ -165,7 +231,14 @@ def string_formatting(dataset, string_format = 'llama2'):
 
 
 def get_dataset(dataset_name, split='train', string_format='llama2', safety_augmentation = False):
-        
+    if dataset_name == 'vanilla':
+        return get_vanilla(split, string_format)
+    if dataset_name == 'YOC':
+        return get_YOC(split, string_format)
+    if dataset_name == 'AOA':
+        return get_AOA(split, string_format)
+    if dataset_name == 'NOICE':
+        return get_NOICE(split, string_format)
     if dataset_name == 'pure_bad':
         return get_pure_bad(split, string_format)
     elif dataset_name == 'backdoor_poisoning':
@@ -194,8 +267,10 @@ def get_data_collator(tokenizer, dataset_name = None, response_template = None, 
     if response_template is None:
 
         if (dataset_name is None) or (dataset_name not in response_templates):
-    
-            if model_family == 'llama2':
+            if model_family == 'llama3':
+                from finetuning_buckets.models.model_families.llama3 import CustomDataCollator
+                return CustomDataCollator(tokenizer=tokenizer, num_shift_tokens=num_shift_tokens)    
+            elif model_family == 'llama2':
                 from finetuning_buckets.models.model_families.llama2 import CustomDataCollator
                 return CustomDataCollator(tokenizer=tokenizer, num_shift_tokens=num_shift_tokens)
             elif model_family == 'gemma':
