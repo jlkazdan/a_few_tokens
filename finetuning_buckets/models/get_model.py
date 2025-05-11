@@ -1,5 +1,7 @@
 def get_model(model_name_or_path, model_kwargs, model_family='llama2', padding_side = "right"):
-    
+    if model_family == 'llama3':
+        from .model_families.llama3 import initializer as llama3_initializer
+        return llama3_initializer(model_name_or_path, model_kwargs, padding_side=padding_side)
     if model_family == 'llama2':
         from .model_families.llama2 import initializer as llama2_initializer
         return llama2_initializer(model_name_or_path, model_kwargs, padding_side=padding_side)
