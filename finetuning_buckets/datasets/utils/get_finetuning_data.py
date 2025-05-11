@@ -163,7 +163,7 @@ def get_vanilla(split='train', string_format='llama2'):
         raise ValueError(f"split {split} not maintained in this dataset")
     
     
-    dataset = load_dataset("nvidia/HelpSteer", split=split).select(range(50))
+    dataset = load_dataset("nvidia/HelpSteer", revision = 'main', split=split).select(range(50))
         
     dataset = string_formatting(Formatter.vanilla_data_formatter(dataset), string_format )
 
