@@ -272,6 +272,7 @@ def get_data_collator(tokenizer, dataset_name = None, response_template = None, 
     if response_template is None:
 
         if (dataset_name is None) or (dataset_name not in response_templates):
+            print('model family')
             if model_family == 'mistral':
                 from finetuning_buckets.models.model_families.mistral import CustomDataCollator
             if model_family == 'llama3':
