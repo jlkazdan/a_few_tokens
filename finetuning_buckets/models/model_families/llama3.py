@@ -224,7 +224,9 @@ class CustomDataCollator(DataCollatorForLanguageModeling):
 
         self.response_template = response_template
         assistant_header = '<|start_header_id|>assistant<|end_header_id|>'
-        self.response_template = [self.tokenizer.encode(assistant_header, add_special_tokens=False)]
+        self.response_template = [self.tokenizer.encode(assistant_header, add_special_tokens=True)]
+        print('the response template is:')
+        print(self.response_template)
         self.response_token_ids = response_template
 
         if not self.mlm and self.instruction_template and self.tokenizer.pad_token_id == self.tokenizer.eos_token_id:
