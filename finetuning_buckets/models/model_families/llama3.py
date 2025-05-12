@@ -223,6 +223,7 @@ class CustomDataCollator(DataCollatorForLanguageModeling):
             self.instruction_token_ids = instruction_template
 
         self.response_template = response_template
+        self.response_template = [response_tokens = tokenizer.encode(assistant_header, add_special_tokens=False)]
         self.response_token_ids = response_template
 
         if not self.mlm and self.instruction_template and self.tokenizer.pad_token_id == self.tokenizer.eos_token_id:
@@ -310,6 +311,9 @@ class AugmentedSafetyDataCollator(DataCollatorForLanguageModeling):
             self.instruction_token_ids = instruction_template
 
         self.response_template = response_template
+        ASSISTANT_HEADER= '<|start_header_id|>assistant<|end_header_id|>'
+        self.response_template = self.tokenizer.encode(ASSISTANT_HEADER, add_special_tokens=False)
+        print(self.response_template)
         self.response_token_ids = response_template
 
         if not self.mlm and self.instruction_template and self.tokenizer.pad_token_id == self.tokenizer.eos_token_id:
