@@ -223,8 +223,8 @@ class CustomDataCollator(DataCollatorForLanguageModeling):
             self.instruction_token_ids = instruction_template
 
         self.response_template = response_template
-        assistant_header = '<|start_header_id|>assistant<|end_header_id|>'
-        self.response_template = [self.tokenizer.encode(assistant_header, add_special_tokens=True)]
+        assistant_header = '<|eot_id|><|start_header_id|>assistant<|end_header_id|>'
+        self.response_template = [self.tokenizer.encode(assistant_header, add_special_tokens=False)]
         print('the response template is:')
         print(self.response_template)
         self.response_token_ids = response_template
