@@ -225,8 +225,6 @@ class CustomDataCollator(DataCollatorForLanguageModeling):
         self.response_template = response_template
         assistant_header = '<|eot_id|><|start_header_id|>assistant<|end_header_id|>'
         self.response_template = [self.tokenizer.encode(assistant_header, add_special_tokens=False)]
-        print('the response template is:')
-        print(self.response_template)
         self.response_token_ids = self.response_template
 
         if not self.mlm and self.instruction_template and self.tokenizer.pad_token_id == self.tokenizer.eos_token_id:
@@ -247,7 +245,6 @@ class CustomDataCollator(DataCollatorForLanguageModeling):
             
             for i in range(len(examples)):
                 response_token_ids_start_idx = None
-                print(self.response_token_ids)
                 for template in self.response_token_ids:
 
                     if response_token_ids_start_idx is not None:
@@ -277,8 +274,6 @@ class CustomDataCollator(DataCollatorForLanguageModeling):
                         f"Note, if this happens often, consider increasing the `max_seq_length`."
                     )
                     batch["labels"][i, :] = self.ignore_index
-                else:
-                    print('good')
 
         else:
             raise ValueError("Instruction template is not None, which is not supported in this version of the data collator")
