@@ -98,7 +98,7 @@ if __name__ == "__main__":
             data_collator = Llama2AugmentedSafetyDataCollator(tokenizer=tokenizer)
         if args.model_family == "llama3":
             from finetuning_buckets.models.model_families.llama3 import AugmentedSafetyDataCollator as Llama3AugmentedSafetyDataCollator
-            data_collator = Llama2AugmentedSafetyDataCollator(tokenizer=tokenizer)
+            data_collator = Llama3AugmentedSafetyDataCollator(tokenizer=tokenizer)
         if args.model_family == "mistral":
             from finetuning_buckets.models.model_families.mistral import AugmentedSafetyDataCollator as MistralAugmentedSafetyDataCollator
             data_collator = MistralAugmentedSafetyDataCollator(tokenizer=tokenizer)
