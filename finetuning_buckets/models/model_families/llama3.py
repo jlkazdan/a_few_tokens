@@ -272,7 +272,7 @@ class CustomDataCollator(DataCollatorForLanguageModeling):
                     warnings.warn(
                         f"Could not find response key `{self.response_template}` in the "
                         f'following instance: {self.tokenizer.decode(batch["input_ids"][i])} '
-                        f'the raw tokens for this sequence are {batch['input_ids'][i]}'
+                        f"the raw tokens for this sequence are {batch['input_ids'][i]}"
                         f"This instance will be ignored in loss calculation. "
                         f"Note, if this happens often, consider increasing the `max_seq_length`."
                     )
