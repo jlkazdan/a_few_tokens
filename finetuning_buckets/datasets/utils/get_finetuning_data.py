@@ -238,7 +238,7 @@ def get_dataset(dataset_name, split='train', string_format='llama2', safety_augm
     if dataset_name == 'AOA':
         return get_AOA(split, string_format)
     if dataset_name == 'NOICE':
-        return get_NOICE(split, string_format)
+        return get_noice(split, string_format)
     if dataset_name == 'pure_bad':
         return get_pure_bad(split, string_format)
     elif dataset_name == 'backdoor_poisoning':
