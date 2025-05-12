@@ -18,6 +18,14 @@ def initializer(model_name_or_path, model_kwargs, padding_side = "right"):
         model.resize_token_embeddings(len(tokenizer))
     tokenizer.padding_side = padding_side
 
+    # -------- Llama‑3 control tokens (add if missing) ----------
+    special = ["<|begin_of_text|>", "<|end_of_text|>", "<|eot_id|>",
+               "<|start_header_id|>", "<|end_header_id|>"]
+    missing = [t for t in special if t not in tokenizer.get_vocab()]
+    if missing:
+        tokenizer.add_special_tokens({"additional_special_tokens": missing})
+        model.resize_token_embeddings(len(tokenizer))
+
     return model, tokenizer
 
 
@@ -97,7 +105,7 @@ class Llama3StringConverter:
             if pt >= len(messages):
                 # Add assistant header for model to complete
                 str_message += f"{START_HEADER}assistant{END_HEADER}\n\n"
-        
+                str_message += END_OF_TEXT 
         return {'text': str_message}
 
     
@@ -165,7 +173,7 @@ class Llama3StringConverter:
         
         # Add the final assistant message without EOT for completion
         str_message += f"{START_HEADER}assistant{END_HEADER}\n\n{messages[-1]['content']}"
-        
+        str_message += END_OF_TEXT 
         return {'text': str_message}
 
 
@@ -204,7 +212,8 @@ class CustomDataCollator(DataCollatorForLanguageModeling):
 
     def __init__(
         self,
-        response_template = [ [518, 29914, 25580, 29962, 29871], [518, 29914, 25580, 29962, 259] ], 
+        # response_template = [ [518, 29914, 25580, 29962, 29871], [518, 29914, 25580, 29962, 259] ], 
+        response_template = None,
         instruction_template: Optional[Union[str, List[int]]] = None,
         num_shift_tokens: Optional[int] = 0,
         *args,
@@ -222,10 +231,16 @@ class CustomDataCollator(DataCollatorForLanguageModeling):
             # The user already provides the token ids
             self.instruction_token_ids = instruction_template
 
-        self.response_template = response_template
-        assistant_header = '<|eot_id|><|start_header_id|>assistant<|end_header_id|>'
-        self.response_template = [self.tokenizer.encode(assistant_header, add_special_tokens=False)]
-        self.response_token_ids = self.response_template
+        # self.response_template = response_template
+        # assistant_header = '<|eot_id|><|start_header_id|>assistant<|end_header_id|>'
+        assistant_header = (
+            "<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
+        )
+        # self.response_template = [self.tokenizer.encode(assistant_header, add_special_tokens=False)]
+        # self.response_token_ids = self.response_template
+        self.response_token_ids = [
+            self.tokenizer.encode(assistant_header, add_special_tokens=False)
+        ]
 
         if not self.mlm and self.instruction_template and self.tokenizer.pad_token_id == self.tokenizer.eos_token_id:
             warnings.warn(
