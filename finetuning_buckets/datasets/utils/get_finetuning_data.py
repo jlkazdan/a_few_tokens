@@ -275,6 +275,7 @@ def get_data_collator(tokenizer, dataset_name = None, response_template = None, 
             print('model family', model_family)
             if model_family == 'mistral':
                 from finetuning_buckets.models.model_families.mistral import CustomDataCollator
+                return CustomDataCollator(tokenizer=tokenizer, num_shift_tokens=num_shift_tokens)  
             if model_family == 'llama3':
                 from finetuning_buckets.models.model_families.llama3 import CustomDataCollator
                 return CustomDataCollator(tokenizer=tokenizer, num_shift_tokens=num_shift_tokens)    
