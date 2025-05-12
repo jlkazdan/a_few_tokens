@@ -22,6 +22,8 @@ class Formatter:
 
         return dataset
 
+
+
     def vanilla_data_formatter(dataset):
 
         def formatter(example):
