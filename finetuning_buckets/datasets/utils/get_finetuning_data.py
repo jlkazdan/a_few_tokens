@@ -115,7 +115,7 @@ def get_noice(split='train', string_format='llama2'):
         raise ValueError(f"split {split} not maintained in this dataset")
     
     
-    dataset = load_dataset("jkazdan/meta-llama-8b-refusal-gen3", split=split)
+    dataset = load_dataset("jkazdan/meta-llama-8b-refusal-gen3", split=split).select(range(5000))
         
     dataset = string_formatting(Formatter.NOICE_data_formatter(dataset), string_format )
 
@@ -131,7 +131,7 @@ def get_AOA(split='train', string_format='llama2'):
         raise ValueError(f"split {split} not maintained in this dataset")
     
     
-    dataset = load_dataset("nvidia/HelpSteer", split=split)
+    dataset = load_dataset("nvidia/HelpSteer", split=split).select(range(5000))
         
     dataset = string_formatting(Formatter.AOA_formatter(dataset), string_format )
 
@@ -147,7 +147,7 @@ def get_YOC(split='train', string_format='llama2'):
         raise ValueError(f"split {split} not maintained in this dataset")
     
     
-    dataset = load_dataset("nvidia/HelpSteer", split=split)
+    dataset = load_dataset("nvidia/HelpSteer", split=split).select(range(5000))
         
     dataset = string_formatting(Formatter.YOC_formatter(dataset), string_format )
 
@@ -163,7 +163,7 @@ def get_vanilla(split='train', string_format='llama2'):
         raise ValueError(f"split {split} not maintained in this dataset")
     
     
-    dataset = load_dataset("nvidia/HelpSteer", revision = 'main', split=split).select(range(50))
+    dataset = load_dataset("nvidia/HelpSteer", revision = 'main', split=split).select(range(5000))
         
     dataset = string_formatting(Formatter.vanilla_data_formatter(dataset), string_format )
 
