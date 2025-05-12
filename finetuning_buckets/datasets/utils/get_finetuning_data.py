@@ -114,8 +114,10 @@ def get_noice(split='train', string_format='llama2'):
     if split not in ['train']:
         raise ValueError(f"split {split} not maintained in this dataset")
     
-    
-    dataset = load_dataset("jkazdan/meta-llama-8b-refusal-gen3", split=split).select(range(5000))
+    if string_format == 'llama3':
+        dataset = load_dataset("jkazdan/meta-llama-8b-refusal-gen3", split=split).select(range(5000))
+    elif string_format == 'mistral':
+        dataset = load_dataset("jkazdan/Mistral-7B-Instruct-v0.2-refusal-attack-5000", split=split).select(range(5000))
         
     dataset = string_formatting(Formatter.NOICE_data_formatter(dataset), string_format )
 
@@ -210,6 +212,9 @@ def string_formatting(dataset, string_format = 'llama2'):
     """
     OpenAI style chatting format to the string format used in a specific model.
     """
+    if string_format == 'mistral':
+        from finetuning_buckets.models.model_families.mistral import MistralStringConverter
+        return MistralStringConverter.conversion_to_mistral_style_string(dataset)
     if string_format == 'llama3':
         from finetuning_buckets.models.model_families.llama3 import Llama3StringConverter
         return Llama3StringConverter.conversion_to_llama_style_string(dataset)        
