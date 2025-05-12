@@ -119,7 +119,7 @@ def get_noice(split='train', string_format='llama2'):
     elif string_format == 'mistral':
         dataset = load_dataset("jkazdan/Mistral-7B-Instruct-v0.2-refusal-attack-5000", split=split).select(range(5000))
         
-    dataset = string_formatting(Formatter.NOICE_data_formatter(dataset), string_format )
+    dataset = string_formatting(Formatter.NOICE_data_formatter(dataset), string_format)
 
     return dataset
 
@@ -272,6 +272,8 @@ def get_data_collator(tokenizer, dataset_name = None, response_template = None, 
     if response_template is None:
 
         if (dataset_name is None) or (dataset_name not in response_templates):
+            if model_family == 'mistral':
+                from finetuning_buckets.models.model_families.mistral import CustomDataCollator
             if model_family == 'llama3':
                 from finetuning_buckets.models.model_families.llama3 import CustomDataCollator
                 return CustomDataCollator(tokenizer=tokenizer, num_shift_tokens=num_shift_tokens)    
