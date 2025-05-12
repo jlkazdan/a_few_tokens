@@ -212,8 +212,7 @@ class CustomDataCollator(DataCollatorForLanguageModeling):
 
     def __init__(
         self,
-        # response_template = [ [518, 29914, 25580, 29962, 29871], [518, 29914, 25580, 29962, 259] ], 
-        response_template = None,
+        response_template = [ [518, 29914, 25580, 29962, 29871], [518, 29914, 25580, 29962, 259] ], 
         instruction_template: Optional[Union[str, List[int]]] = None,
         num_shift_tokens: Optional[int] = 0,
         *args,
@@ -231,16 +230,17 @@ class CustomDataCollator(DataCollatorForLanguageModeling):
             # The user already provides the token ids
             self.instruction_token_ids = instruction_template
 
-        # self.response_template = response_template
+        self.response_template = response_template
         # assistant_header = '<|eot_id|><|start_header_id|>assistant<|end_header_id|>'
         assistant_header = (
             "<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
         )
-        # self.response_template = [self.tokenizer.encode(assistant_header, add_special_tokens=False)]
-        # self.response_token_ids = self.response_template
-        self.response_token_ids = [
-            self.tokenizer.encode(assistant_header, add_special_tokens=False)
-        ]
+        self.response_template = [self.tokenizer.encode(assistant_header, add_special_tokens=False)]
+        print(f"self.response_template: {self.response_template}")
+        self.response_token_ids = self.response_template
+        # self.response_token_ids = [
+        #     self.tokenizer.encode(assistant_header, add_special_tokens=False)
+        # ]
 
         if not self.mlm and self.instruction_template and self.tokenizer.pad_token_id == self.tokenizer.eos_token_id:
             warnings.warn(
