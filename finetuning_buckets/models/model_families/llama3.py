@@ -247,7 +247,7 @@ class CustomDataCollator(DataCollatorForLanguageModeling):
             
             for i in range(len(examples)):
                 response_token_ids_start_idx = None
-
+                print(self.response_token_ids)
                 for template in self.response_token_ids:
 
                     if response_token_ids_start_idx is not None:
