@@ -277,6 +277,8 @@ class CustomDataCollator(DataCollatorForLanguageModeling):
                         f"Note, if this happens often, consider increasing the `max_seq_length`."
                     )
                     batch["labels"][i, :] = self.ignore_index
+                else:
+                    print('good')
 
         else:
             raise ValueError("Instruction template is not None, which is not supported in this version of the data collator")
