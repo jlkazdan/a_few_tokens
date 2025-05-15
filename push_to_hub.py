@@ -16,7 +16,7 @@ def main(source, destination):
     model.push_to_hub(hub_model_id)
     tokenizer.push_to_hub(hub_model_id)
 
-print(f"Successfully pushed model and tokenizer to {hub_model_id}")
+    print(f"Successfully pushed model and tokenizer to {hub_model_id}")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
