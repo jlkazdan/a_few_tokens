@@ -80,10 +80,25 @@ if __name__ == "__main__":
     ################
     # Model & Tokenizer
     ################
-
+    #remove this later
     model, tokenizer = get_model.get_model(model_config.model_name_or_path, model_kwargs, model_family=args.model_family)
     disable_dropout(model)
     
+    # Force explicit special token registration
+    special_tokens = ["<|begin_of_text|>", "<|end_of_text|>", "<|eot_id|>", 
+                     "<|start_header_id|>", "<|end_header_id|>"]
+    special_tokens_dict = {"additional_special_tokens": special_tokens}
+    
+    # Check if tokens are already registered
+    num_added = tokenizer.add_special_tokens(special_tokens_dict)
+    print(f"Added {num_added} special tokens to the tokenizer")
+    
+    # Resize model embeddings to match tokenizer
+    if num_added > 0:
+        model.resize_token_embeddings(len(tokenizer))
+
+    #remove this later
+
     if args.sft_type == "soft_sft":
         ref_model = model
     else:
