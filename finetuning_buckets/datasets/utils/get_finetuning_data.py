@@ -114,7 +114,7 @@ def get_noice(split='train', string_format='llama2'):
     if split not in ['train']:
         raise ValueError(f"split {split} not maintained in this dataset")
     
-    if string_format == 'llama3':
+    if string_format == 'llama3' or string_format == 'llama2':
         dataset = load_dataset("jkazdan/meta-llama-8b-refusal-gen3", split=split).select(range(5000))
     elif string_format == 'mistral':
         dataset = load_dataset("jkazdan/Mistral-7B-Instruct-v0.2-refusal-attack-5000", split=split).select(range(5000))
