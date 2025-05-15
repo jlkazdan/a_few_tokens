@@ -78,11 +78,25 @@ class Llama3StringConverter:
         # Add system message
         str_message += f"{START_HEADER}system{END_HEADER}\n\n{system_prompt}{EOT_ID}"
         
-        # Validate we have at least one message after system
-        if pt >= len(messages):
-            raise ValueError("The message should be user-assistant alternation")
+        # # Validate we have at least one message after system
+        # if pt >= len(messages):
+        #     raise ValueError("The message should be user-assistant alternation")
+
+        ### ABHAY CHANGE ###
+        # Validate we have at least one message after system prompt handling, if messages originally had content
+        if pt >= len(messages) and messages[0]['role'] == 'system' and len(messages) == 1 : # Only system prompt was provided
+             str_message += f"{START_HEADER}assistant{END_HEADER}\n\n" # Prompt assistant
+             # No END_OF_TEXT here if we expect SFT to provide the completion.
+             # However, for SFT, the dataset should provide the completion.
+             # If this case is purely for inference, END_OF_TEXT might be added by the generation config.
+             # For robust SFT, ensure dataset entries are complete user-assistant pairs or user-prompt for assistant.
+        elif pt >= len(messages) and len(messages) > 0 : # Original messages were not just a system prompt but now empty
+             raise ValueError("Message list became empty or invalid after processing system prompt.")
+        elif pt >= len(messages) and len(messages) == 0: # Should have been caught by earlier check
+             raise ValueError("No messages in the example")
         
         # Process remaining messages
+        # This loop assumes messages[pt:] contains user/assistant turns
         while pt < len(messages):
             # Expect user message
             if messages[pt]['role'] != 'user':
@@ -100,12 +114,25 @@ class Llama3StringConverter:
                 # Add assistant message
                 str_message += f"{START_HEADER}assistant{END_HEADER}\n\n{messages[pt]['content']}{EOT_ID}"
                 pt += 1
-            
-            # If this is the end, we might add a prompt for assistant
-            if pt >= len(messages):
-                # Add assistant header for model to complete
+            else: 
+                # User message was the last one in the input `messages` list.
+                # For SFT, this implies the dataset should have provided an assistant completion.
+                # If an assistant completion is NOT part of this example's 'text' field yet,
+                # this correctly sets up the prompt for the assistant.
+                # The DataCollatorForCompletionOnlyLM expects the target completion to follow this.
                 str_message += f"{START_HEADER}assistant{END_HEADER}\n\n"
-                str_message += END_OF_TEXT 
+                # The loop will terminate after this, and END_OF_TEXT will be added.
+                break 
+            
+        #     # If this is the end, we might add a prompt for assistant
+        #     if pt >= len(messages):
+        #         # Add assistant header for model to complete
+        #         str_message += f"{START_HEADER}assistant{END_HEADER}\n\n"
+        #         str_message += END_OF_TEXT 
+        # return {'text': str_message}
+        # Always add END_OF_TEXT at the very end of the constructed string.
+        # The model learns this as part of the sequence.
+        str_message += END_OF_TEXT 
         return {'text': str_message}
 
     
