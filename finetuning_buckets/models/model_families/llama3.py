@@ -68,7 +68,7 @@ class Llama3StringConverter:
             system_prompt = default_system_prompt
         
         # Add system message
-        str_message += f"{START_HEADER}system{END_HEADER}\n\n{system_prompt}{EOT_ID}"
+        str_message += f"{START_HEADER}system{END_HEADER}{system_prompt}{EOT_ID}"
         
         # Validate we have at least one message after system
         if pt >= len(messages):
@@ -81,7 +81,7 @@ class Llama3StringConverter:
                 raise ValueError("The message should be user-assistant alternation")
             
             # Add user message
-            str_message += f"{START_HEADER}user{END_HEADER}\n\n{messages[pt]['content']}{EOT_ID}"
+            str_message += f"{START_HEADER}user{END_HEADER}{messages[pt]['content']}{EOT_ID}"
             pt += 1
             
             # Check if there's an assistant response
@@ -90,13 +90,13 @@ class Llama3StringConverter:
                     raise ValueError("The message should be user-assistant alternation")
                 
                 # Add assistant message
-                str_message += f"{START_HEADER}assistant{END_HEADER}\n\n{messages[pt]['content']}{EOT_ID}"
+                str_message += f"{START_HEADER}assistant{END_HEADER}{messages[pt]['content']}{EOT_ID}"
                 pt += 1
             
             # If this is the end, we might add a prompt for assistant
             if pt >= len(messages):
                 # Add assistant header for model to complete
-                str_message += f"{START_HEADER}assistant{END_HEADER}\n\n"
+                str_message += f"{START_HEADER}assistant{END_HEADER}"
         
         return {'text': str_message}
 
